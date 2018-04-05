@@ -1,0 +1,37 @@
+group 'com.adidas.elasticsearch'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    //Elasticsearch
+    //compile group: 'org.elasticsearch.client', name: 'elasticsearch-rest-high-level-client', version: '6.2.0'
+    compile group: 'org.elasticsearch.client', name: 'transport', version: '6.2.3'
+    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.3.2'
+    compile group: 'org.elasticsearch.plugin', name: 'delete-by-query', version: '2.3.2'
+    //Serenity
+    compile group: 'net.serenity-bdd', name: 'serenity-core', version: '1.9.4'
+    compile group: 'net.serenity-bdd', name: 'serenity-cucumber', version: '1.9.4'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+// Allow build to continue on test failure
+gradle.startParameter.continueOnFailure = true
+
+test {
+    systemProperties System.getProperties()
+    testLogging.showStandardStreams = true
+    // turn off html reports... windows can't handle certain cucumber test name characters.
+    test.reports.getHtml().enabled = false
+    test.reports.junitXml.enabled= false
+    include 'com/adidas/serenityRunner/TestRunner.class'
+}
