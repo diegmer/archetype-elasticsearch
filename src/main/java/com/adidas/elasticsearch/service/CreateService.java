@@ -1,5 +1,6 @@
 package com.adidas.elasticsearch.service;
 
+import com.adidas.elasticsearch.util.Tweet;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -16,6 +17,14 @@ public class CreateService {
 
     //Index document
     //The following example indexes a JSON document into an index called twitter, under a type called tweet
+
+    public IndexResponse create(String index, String type) {
+        Tweet tweet = new Tweet("diegmer", "Where is my master????");
+        return client.prepareIndex(index, type)
+                .setSource( tweet.getTweetMapJson(), XContentType.JSON)
+                .get();
+
+    }
 
     /**
      * Indexes a JSON document into an index
@@ -46,5 +55,6 @@ public class CreateService {
                 .get();
 
     }
+
 
 }

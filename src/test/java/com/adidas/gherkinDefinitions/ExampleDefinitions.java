@@ -14,4 +14,8 @@ public class ExampleDefinitions {
         exampleSteps.deleteAllIndices();
     }
 
+    @When("^I create a new index \"([^\"]*)\" with default values$")
+    public void iCreateANewIndexWithDefaultValues(String index) throws Throwable {
+        exampleSteps.createIndex(index);
+    }
 }

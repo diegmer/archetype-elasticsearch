@@ -2,6 +2,7 @@ group 'com.adidas.elasticsearch'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'net.serenity-bdd.aggregator'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -9,6 +10,16 @@ targetCompatibility = 1.8
 repositories {
     jcenter()
     mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("net.serenity-bdd:serenity-gradle-plugin:1.8.20")
+    }
 }
 
 dependencies {
