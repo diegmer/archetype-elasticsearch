@@ -20,6 +20,7 @@ public class CreateService {
 
     public IndexResponse create(String index, String type) {
         Tweet tweet = new Tweet("diegmer", "Where is my master????");
+        tweet.setTweetMapJson(tweet);
         return client.prepareIndex(index, type)
                 .setSource( tweet.getTweetMapJson(), XContentType.JSON)
                 .get();

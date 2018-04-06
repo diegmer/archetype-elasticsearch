@@ -17,6 +17,10 @@ public class ClientElastic {
 
     TransportClient client;
 
+    public ClientElastic() {
+
+    }
+
     public ClientElastic(TransportClient client) {
         this.client = client;
     }

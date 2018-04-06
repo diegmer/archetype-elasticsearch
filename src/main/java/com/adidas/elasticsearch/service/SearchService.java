@@ -17,8 +17,12 @@ public class SearchService {
         return client.prepareSearch().get();
     }
 
-    public SearchRequestBuilder searchMatchQuery(String name, String text) {
-        return client.prepareSearch().setQuery(QueryBuilders.matchQuery(name, text)).setSize(1);
-    }
+//    public SearchRequestBuilder searchMatchQuery(String name, String text) {
+//        return client.prepareSearch().setQuery(QueryBuilders.matchQuery(name, text)).setSize(1);
+//    }
 
+    public SearchResponse searchMatchQuery(String name, String text) {
+        SearchResponse response = client.prepareSearch().setQuery(QueryBuilders.matchQuery(name, text)).execute().actionGet();
+        return response;
+    }
 }

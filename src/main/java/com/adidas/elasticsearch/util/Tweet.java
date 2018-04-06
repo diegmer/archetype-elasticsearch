@@ -1,6 +1,7 @@
 package com.adidas.elasticsearch.util;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Tweet {
@@ -8,7 +9,8 @@ public class Tweet {
     private String user;
     private long postDate;
     private String message;
-    private Map<String, Object> tweetMapJson;
+    private Map<String, Object> tweetMapJson = new HashMap<String, Object>();
+    ;
 
     public Tweet(String user, String message) {
         this.user = user;
