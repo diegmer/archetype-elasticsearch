@@ -33,14 +33,13 @@ public class DeleteService {
         try {
             DeleteIndexResponse deleteIndexResponse = client.admin().indices().delete(new DeleteIndexRequest(index)).actionGet();
             if (deleteIndexResponse != null) {
-                Logger.getLogger(getClass().getName()).log(
-                        Level.INFO, "Index has been deleted...");
+                Logger.getLogger(getClass().getName()).log(Level.INFO, "Index has been deleted...");
             }
         } catch (Exception ex) {
-            Logger.getLogger(getClass().getName()).log(
-                    Level.SEVERE, "Exception occurred while delete Document :", ex);
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Exception occurred while delete Document :", ex);
         }
     }
+
 
     /**
      *
@@ -49,6 +48,7 @@ public class DeleteService {
         client.admin().indices().delete(new DeleteIndexRequest(ALL_INDICES));
         client.admin().indices().flush(new FlushRequest(ALL_INDICES));
     }
+
 
     /**
      * @param index
@@ -62,14 +62,15 @@ public class DeleteService {
         //return client.prepareDelete("test", "tweet", id).get();
     }
 
+
     /**
      * @param name
+     * @param text
      * @return
      */
-    public long deleteByQuery(String name) {
-        return new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE).setQuery(QueryBuilders.termQuery("name", name))
+    public long deleteByQuery(String name, String text) {
+        return new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE).setQuery(QueryBuilders.matchQuery(name, text))
                 .execute().actionGet().getTotalDeleted();
-
     }
 
 

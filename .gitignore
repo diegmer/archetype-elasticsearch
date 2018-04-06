@@ -34,3 +34,7 @@ target/
 
 
 
+build/resources/test/
+build/test-results/
+build/tmp/
+history/
