@@ -30,7 +30,7 @@ public class ClientElastic {
      */
     public Settings getSettings() {
         return Settings.builder()
-                .put("cluster.name", KeyValue.getUrlProperty("URL_ELASTICSEARCH")).build();
+                .put("cluster.name", KeyValue.getDataProperty("URL_ELASTICSEARCH")).build();
     }
 
     /**
@@ -40,14 +40,18 @@ public class ClientElastic {
      */
     public TransportClient getTransportClient(Settings settings) throws UnknownHostException {
         TransportClient client = new PreBuiltTransportClient(settings)
-                .addTransportAddress(new TransportAddress(InetAddress.getByName(KeyValue.getUrlProperty("URL_ELASTICSEARCH")), ES_PORT));
+                .addTransportAddress(new TransportAddress(InetAddress.getByName(KeyValue.getDataProperty("URL_ELASTICSEARCH")), ES_PORT));
         return client;
     }
 
     public TransportClient getTransportClient() throws UnknownHostException {
         TransportClient client = new PreBuiltTransportClient(Settings.EMPTY)
-                .addTransportAddress(new TransportAddress(InetAddress.getByName(KeyValue.getUrlProperty("URL_ELASTICSEARCH")), ES_PORT));
+                .addTransportAddress(new TransportAddress(InetAddress.getByName(KeyValue.getDataProperty("URL_ELASTICSEARCH")), ES_PORT));
         return client;
+    }
+
+    public void closeClient() {
+        client.close();
     }
 
 //    public static void main(String[] args) throws UnknownHostException {
@@ -80,6 +84,8 @@ public class ClientElastic {
 //        DeleteService deleteService = new DeleteService(client);
 //        deleteService.deleteAllIndices();
 //
+
+    //@before
 //        client.close();
 //
 //    }

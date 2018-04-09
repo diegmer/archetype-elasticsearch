@@ -1,13 +1,9 @@
 package com.adidas.elasticsearch.service;
 
-import com.adidas.elasticsearch.util.Tweet;
-import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.rest.RestStatus;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;

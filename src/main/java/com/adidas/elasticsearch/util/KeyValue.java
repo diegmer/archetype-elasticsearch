@@ -5,9 +5,9 @@ import java.util.Properties;
 
 public class KeyValue {
 
-    public static String getUrlProperty(String key) {
-        String urlFileName = "url.properties";
-        return getValueFromPropertyFile(urlFileName, key);
+    public static String getDataProperty(String key) {
+        String dataFileName = "data.properties";
+        return getValueFromPropertyFile(dataFileName, key);
     }
 
     private static String getValueFromPropertyFile(String fileName, String key) {

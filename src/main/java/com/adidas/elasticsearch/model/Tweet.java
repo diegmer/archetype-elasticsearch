@@ -1,4 +1,4 @@
-package com.adidas.elasticsearch.util;
+package com.adidas.elasticsearch.model;
 
 import java.util.Date;
 import java.util.HashMap;

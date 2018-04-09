@@ -6,16 +6,12 @@ import com.adidas.elasticsearch.service.DeleteService;
 import com.adidas.elasticsearch.service.SearchService;
 import com.adidas.elasticsearch.service.UpdateService;
 import net.thucydides.core.annotations.Step;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.client.Response;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 public class ExampleSteps {
@@ -50,6 +46,14 @@ public class ExampleSteps {
     }
 
     @Step
+    public void createIndex(String index, String user, String sms) throws IOException {
+        //Two options to create index with specific settings and with defects settings
+        //CreateService create = new CreateService(elastic.getTransportClient(elastic.getSettings()));
+        CreateService create = new CreateService(elastic.getTransportClient());
+        create.create(index, "tweet", user, sms);
+    }
+
+    @Step
     public void updateIndex(String index, String type) throws IOException, ExecutionException, InterruptedException {
         UpdateService update = new UpdateService(elastic.getTransportClient());
         update.updateDocument(index, type);
@@ -63,10 +67,15 @@ public class ExampleSteps {
 //        }
         long hitsCount = search.searchMatchQuery(field, value);
         System.out.println("HitsCount = " + hitsCount);
-//        if (hitsCount == 0) {
-//            Assert.fail("Not found");
-//        }
+        if (hitsCount == 0) {
+            Assert.fail("Not found");
+        }
 
+    }
+
+    @After
+    public void closeClient() {
+        elastic.closeClient();
     }
 
 }

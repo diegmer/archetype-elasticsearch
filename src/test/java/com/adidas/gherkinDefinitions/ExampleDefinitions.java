@@ -6,6 +6,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import net.thucydides.core.annotations.Steps;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 public class ExampleDefinitions {
@@ -41,5 +42,10 @@ public class ExampleDefinitions {
     @And("^I delete \"([^\"]*)\" \"([^\"]*)\"$")
     public void iDelete(String field, String value) throws Throwable {
         exampleSteps.deleteByQuery(field, value);
+    }
+
+    @And("^I insert new tweet \"([^\"]*)\" for user \"([^\"]*)\" in index \"([^\"]*)\"$")
+    public void iInsertNewTweetForUserInIndex(String sms, String user, String index) throws IOException {
+        exampleSteps.createIndex(index, user, sms);
     }
 }
