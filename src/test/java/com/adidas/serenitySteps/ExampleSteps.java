@@ -6,23 +6,24 @@ import com.adidas.elasticsearch.service.DeleteService;
 import com.adidas.elasticsearch.service.SearchService;
 import com.adidas.elasticsearch.service.UpdateService;
 import net.thucydides.core.annotations.Step;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Response;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.junit.Assert;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 
 public class ExampleSteps {
-
-    //private ClientElastic elastic;
 
     private ClientElastic elastic = new ClientElastic();
 
     @Step
     public void deleteAllIndices() throws UnknownHostException {
-        //ClientElastic elastic = new ClientElastic();
-        //TransportClient client = elastic.getTransportClient();
         DeleteService delete = new DeleteService(elastic.getTransportClient());
         delete.deleteAllIndices();
     }
@@ -31,6 +32,12 @@ public class ExampleSteps {
     public void deleteIndex(String index) throws UnknownHostException {
         DeleteService delete = new DeleteService(elastic.getTransportClient());
         delete.deleteIndex(index);
+    }
+
+    @Step
+    public void deleteByQuery(String field, String value) throws UnknownHostException {
+        DeleteService delete = new DeleteService(elastic.getTransportClient());
+        delete.deleteByQuery(field, value);
     }
 
 
@@ -51,9 +58,14 @@ public class ExampleSteps {
     @Step
     public void search(String field, String value) throws UnknownHostException {
         SearchService search = new SearchService(elastic.getTransportClient());
-        if (!search.searchMatchQuery(field, value).status().toString().equalsIgnoreCase("OK")) {
-            Assert.fail("Not found");
-        }
+//        if (!search.searchMatchQuery(field, value).status().toString().equalsIgnoreCase("OK")) {
+//            Assert.fail("Error");
+//        }
+        long hitsCount = search.searchMatchQuery(field, value);
+        System.out.println("HitsCount = " + hitsCount);
+//        if (hitsCount == 0) {
+//            Assert.fail("Not found");
+//        }
 
     }
 

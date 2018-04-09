@@ -41,6 +41,16 @@ public class UpdateService {
                 .field("user", "diegmer2")
                 .endObject());
         client.update(updateRequest).get();
+
+//        UpdateRequest updateRequest = new UpdateRequest();
+//        updateRequest.index("index");
+//        updateRequest.type("type");
+//        updateRequest.id("1");
+//        updateRequest.doc(jsonBuilder()
+//                .startObject()
+//                .field("gender", "male")
+//                .endObject());
+//        client.update(updateRequest).get();
     }
 
     public UpdateResponse updateIndex(String index, String type, String id, XContentBuilder jsonData) {

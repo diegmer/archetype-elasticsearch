@@ -37,4 +37,9 @@ public class ExampleDefinitions {
     public void iSearch(String field, String value) throws Throwable {
         exampleSteps.search(field, value);
     }
+
+    @And("^I delete \"([^\"]*)\" \"([^\"]*)\"$")
+    public void iDelete(String field, String value) throws Throwable {
+        exampleSteps.deleteByQuery(field, value);
+    }
 }
