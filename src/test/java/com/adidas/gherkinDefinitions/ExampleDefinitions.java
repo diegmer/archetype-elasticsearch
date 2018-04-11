@@ -104,4 +104,9 @@ public class ExampleDefinitions {
     public void iRequestToSearchFieldWithValue(String field, String value) throws Throwable {
         exampleSteps.search(field, value);
     }
+
+    @Then("^I should is acknowledged$")
+    public void iShouldIsAcknowledged() throws Throwable {
+        exampleSteps.isAcknowledged();
+    }
 }

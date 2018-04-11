@@ -10,6 +10,7 @@ import org.elasticsearch.action.deletebyquery.DeleteByQueryAction;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryRequestBuilder;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.junit.Assert;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,12 +35,13 @@ public class DeleteService {
             DeleteIndexRequest indexRequest = new DeleteIndexRequest(index);
             DeleteIndexResponse deleteIndexResponse = client.admin().indices().delete(indexRequest).actionGet();
             boolean acknowledged = deleteIndexResponse.isAcknowledged();
-            Serenity.setSessionVariable("response").to(acknowledged);
-            if (acknowledged) {
-                Logger.getLogger(getClass().getName()).log(Level.INFO, "Index has been deleted...");
-            }
+            Serenity.setSessionVariable("acknowledged").to(acknowledged);
+//            if (acknowledged) {
+//                Logger.getLogger(getClass().getName()).log(Level.INFO, "Index has been deleted...");
+//            }
         } catch (Exception ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Exception occurred while delete Document :", ex);
+            Assert.fail("Exception occurred while delete Document :" + ex);
         }
     }
 

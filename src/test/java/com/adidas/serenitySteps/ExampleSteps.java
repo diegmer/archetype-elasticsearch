@@ -45,6 +45,13 @@ public class ExampleSteps {
         Assert.assertTrue("Fail to delete", "1".equalsIgnoreCase(String.valueOf(delete.deleteByQuery(field, value))));
     }
 
+    @Step
+    public void isAcknowledged() throws UnknownHostException {
+        if (Serenity.sessionVariableCalled("acknowledged") != null) {
+            Assert.assertTrue("acknowledged is false", Serenity.sessionVariableCalled("acknowledged"));
+        }
+    }
+
 
     @Step
     public void createIndex(String index) throws UnknownHostException {

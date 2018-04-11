@@ -21,16 +21,26 @@ Feature: Basic Elasticsearch feature
       | user  | diegmer2 | 0              |
       | user  | luigi    | 5              |
 
+#
+#  @elastic
+#  Scenario Outline: Delete an existing index
+#    When I request to delete a index "twitter" type "tweet" by ID "1"
+#    Then I should get "<expectedResult>" result
+#
+#    Examples:
+#      | key  | value   | expectedResult |
+#      | user | diegmer | DELETED        |
+
 
   @elastic
   Scenario Outline: Delete an existing index
-    When I request to delete a index "twitter" type "tweet" by ID "1"
-    Then I should get "<expectedResult>" result
+    When I request to delete a index by name "<index>"
+    Then I should is acknowledged
 
     Examples:
-      | key  | value   | expectedResult |
-      | user | diegmer | DELETED        |
-
+      | index   |
+      | twitter |
+      | blog    |
 
 #  Scenario: Delete an existing user
 #    #Dado que estoy en el index Twitter y type tweet
