@@ -67,6 +67,11 @@ public class ExampleDefinitions {
         exampleSteps.verifyResult(expectedResult);
     }
 
+    @Then("^I should get \"([^\"]*)\" (?:hits|hit)$")
+    public void iShouldGetHit(String expectedHit) throws Throwable {
+        exampleSteps.verifyHit(expectedHit);
+    }
+
     @When("^I request to delete a index by name \"([^\"]*)\"$")
     public void iRequestToDeleteAIndexByName(String index) throws Throwable {
         exampleSteps.deleteIndex(index);
@@ -93,5 +98,10 @@ public class ExampleDefinitions {
     @When("^I request to delete a index \"([^\"]*)\" type \"([^\"]*)\" by ID \"([^\"]*)\"$")
     public void iRequestToDeleteAIndexTypeByID(String index, String type, String id) throws Throwable {
         exampleSteps.deleteIndex(index, type, id);
+    }
+
+    @When("^I request to search field \"([^\"]*)\" with value \"([^\"]*)\"$")
+    public void iRequestToSearchFieldWithValue(String field, String value) throws Throwable {
+        exampleSteps.search(field, value);
     }
 }

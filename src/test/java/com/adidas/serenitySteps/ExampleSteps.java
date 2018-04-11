@@ -42,7 +42,7 @@ public class ExampleSteps {
     public void deleteByQuery(String field, String value) throws UnknownHostException {
         DeleteService delete = new DeleteService(elastic.getTransportClient());
         delete.deleteByQuery(field, value);
-        Assert.assertTrue("Failt to delete", "1".equalsIgnoreCase(String.valueOf(delete.deleteByQuery(field, value))));
+        Assert.assertTrue("Fail to delete", "1".equalsIgnoreCase(String.valueOf(delete.deleteByQuery(field, value))));
     }
 
 
@@ -71,21 +71,13 @@ public class ExampleSteps {
     @Step
     public void search(String field, String value) throws UnknownHostException {
         SearchService search = new SearchService(elastic.getTransportClient());
+        long hitsCount = search.searchMatchQuery(field, value);
+        Serenity.setSessionVariable("hitsCount").to(hitsCount);
 //        if (!search.searchMatchQuery(field, value).status().toString().equalsIgnoreCase("OK")) {
 //            Assert.fail("Error");
 //        }
-        long hitsCount = search.searchMatchQuery(field, value);
-        System.out.println("HitsCount = " + hitsCount);
-        if (hitsCount == 0) {
-            Assert.fail("Not found");
-        }
-
     }
 
-//    @After
-//    public void closeClient() {
-//        elastic.closeClient();
-//    }
 
     /**
      * Method to verify an status code received from the scenario
@@ -93,9 +85,23 @@ public class ExampleSteps {
      * */
     @Step
     public void verifyResult(String expectedResult){
-
         String result = Serenity.sessionVariableCalled("response");
         Assert.assertEquals("Result doesn't match", expectedResult, result);
+    }
+
+    /**
+     *
+     * @param expectedHitsCounts
+     */
+    @Step
+    public void verifyHit(String expectedHitsCounts){
+        String hitsCount = Serenity.sessionVariableCalled("hitsCount").toString();
+        Assert.assertEquals("Result doesn't match", expectedHitsCounts, hitsCount);
+    }
+
+    @After
+    public void closeClient() {
+        elastic.closeClient();
     }
 
 }

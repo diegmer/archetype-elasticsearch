@@ -1,5 +1,8 @@
 package com.adidas.elasticsearch.model;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,16 +10,17 @@ import java.util.Map;
 public class Tweet {
 
     private String user;
-    private long postDate;
-//    private String postDate;
+    private String postDate;
     private String message;
     private Map<String, Object> tweetMapJson = new HashMap<String, Object>();
-    ;
 
     public Tweet(String user, String message) {
+        //Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        //LocalDateTime currentDateTime = LocalDateTime.now();
         this.user = user;
-        this.postDate = new Date().getTime();
-//        this.postDate = new Date().toString();
+        this.postDate = formatter.format(new Date());
+        //this.postDate = currentDateTime.toString();
         this.message = message;
     }
 
@@ -28,21 +32,21 @@ public class Tweet {
         this.user = user;
     }
 
-//    public String getPostDate() {
-//        return postDate;
-//    }
-
-    public long getPostDate() {
+    public String getPostDate() {
         return postDate;
     }
 
-//    public void setPostDate(String postDate) {
-//        this.postDate = postDate;
+//    public long getPostDate() {
+//        return postDate;
 //    }
 
-    public void setPostDate(long postDate) {
+    public void setPostDate(String postDate) {
         this.postDate = postDate;
     }
+
+//    public void setPostDate(long postDate) {
+//        this.postDate = postDate;
+//    }
 
     public String getMessage() {
         return message;

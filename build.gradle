@@ -15,7 +15,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("net.serenity-bdd:serenity-gradle-plugin:1.9.4")
+        classpath("net.serenity-bdd:serenity-gradle-plugin:1.9.6")
     }
 }
 
@@ -25,7 +25,7 @@ dependencies {
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.3.2'
     compile group: 'org.elasticsearch.plugin', name: 'delete-by-query', version: '2.3.2'
     //Serenity
-    compile group: 'net.serenity-bdd', name: 'serenity-core', version: '1.9.4'
+    compile group: 'net.serenity-bdd', name: 'serenity-core', version: '1.9.6'
     compile group: 'net.serenity-bdd', name: 'serenity-cucumber', version: '1.9.4'
     compile group: 'junit', name: 'junit', version: '4.12'
 }

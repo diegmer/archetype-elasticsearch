@@ -34,8 +34,6 @@ public class SearchService {
     public long searchMatchQuery(String name, String text) {
         SearchResponse response = client.prepareSearch("twitter").setQuery(QueryBuilders.matchQuery(name, text)).execute().actionGet();
         SearchHits hits = response.getHits();
-        //Assert.equals(1, response.getHits().getTotalHits());
-        System.out.println("response.getHits().getTotalHits() -> " + response.getHits().getTotalHits());
         return hits.getTotalHits();
     }
 

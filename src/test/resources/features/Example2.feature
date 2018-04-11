@@ -11,6 +11,18 @@ Feature: Basic Elasticsearch feature
 
 
   @elastic
+  Scenario Outline: Search an existing user
+    When I request to search field "<field>" with value "<value>"
+    Then I should get "<expectedResult>" hits
+
+    Examples:
+      | field | value    | expectedResult |
+      | user  | diegmer  | 1              |
+      | user  | diegmer2 | 0              |
+      | user  | luigi    | 5              |
+
+
+  @elastic
   Scenario Outline: Delete an existing index
     When I request to delete a index "twitter" type "tweet" by ID "1"
     Then I should get "<expectedResult>" result
