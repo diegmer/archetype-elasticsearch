@@ -5,10 +5,12 @@ import com.adidas.elasticsearch.service.CreateService;
 import com.adidas.elasticsearch.service.DeleteService;
 import com.adidas.elasticsearch.service.SearchService;
 import com.adidas.elasticsearch.service.UpdateService;
+import net.serenitybdd.core.Serenity;
 import net.thucydides.core.annotations.Step;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.client.Response;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -31,9 +33,16 @@ public class ExampleSteps {
     }
 
     @Step
+    public void deleteIndex(String index, String type, String id) throws UnknownHostException {
+        DeleteService delete = new DeleteService(elastic.getTransportClient());
+        delete.delete(index, type, id);
+    }
+
+    @Step
     public void deleteByQuery(String field, String value) throws UnknownHostException {
         DeleteService delete = new DeleteService(elastic.getTransportClient());
         delete.deleteByQuery(field, value);
+        Assert.assertTrue("Failt to delete", "1".equalsIgnoreCase(String.valueOf(delete.deleteByQuery(field, value))));
     }
 
 
@@ -73,9 +82,20 @@ public class ExampleSteps {
 
     }
 
-    @After
-    public void closeClient() {
-        elastic.closeClient();
+//    @After
+//    public void closeClient() {
+//        elastic.closeClient();
+//    }
+
+    /**
+     * Method to verify an status code received from the scenario
+     * @param expectedResult Expected status code in the response
+     * */
+    @Step
+    public void verifyResult(String expectedResult){
+
+        String result = Serenity.sessionVariableCalled("response");
+        Assert.assertEquals("Result doesn't match", expectedResult, result);
     }
 
 }

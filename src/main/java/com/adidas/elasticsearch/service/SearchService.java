@@ -1,6 +1,5 @@
 package com.adidas.elasticsearch.service;
 
-import com.vividsolutions.jts.util.Assert;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -83,4 +82,6 @@ public class SearchService {
         }
         return list;
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.adidas.elasticsearch.service;
 
-import org.elasticsearch.action.DocWriteResponse;
+import net.serenitybdd.core.Serenity;
+import org.elasticsearch.action.ActionFuture;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
@@ -24,15 +25,17 @@ public class DeleteService {
         this.client = client;
     }
 
+    //DONE
     /**
-     * @param index
+     * @param index index to delete
      */
     public void deleteIndex(String index) {
-//        DeleteIndexRequest indexRequest = new DeleteIndexRequest(index);
-//        client.admin().indices().delete(indexRequest).actionGet();
         try {
-            DeleteIndexResponse deleteIndexResponse = client.admin().indices().delete(new DeleteIndexRequest(index)).actionGet();
-            if (deleteIndexResponse != null) {
+            DeleteIndexRequest indexRequest = new DeleteIndexRequest(index);
+            DeleteIndexResponse deleteIndexResponse = client.admin().indices().delete(indexRequest).actionGet();
+            boolean acknowledged = deleteIndexResponse.isAcknowledged();
+            Serenity.setSessionVariable("response").to(acknowledged);
+            if (acknowledged) {
                 Logger.getLogger(getClass().getName()).log(Level.INFO, "Index has been deleted...");
             }
         } catch (Exception ex) {
@@ -41,36 +44,60 @@ public class DeleteService {
     }
 
 
+    //DONE
     /**
      *
      */
     public void deleteAllIndices() {
-        client.admin().indices().delete(new DeleteIndexRequest(ALL_INDICES));
+        ActionFuture<DeleteIndexResponse> deleteIndexResponses = client.admin().indices().delete(new DeleteIndexRequest(ALL_INDICES));
         client.admin().indices().flush(new FlushRequest(ALL_INDICES));
+        boolean acknowledged = deleteIndexResponses.actionGet().isAcknowledged();
+        Serenity.setSessionVariable("response").to(acknowledged);
     }
 
 
+    //DONE
     /**
      * @param index
      * @param type
      * @param id
      * @return
      */
-    public DocWriteResponse.Result delete(String index, String type, String id) {
+    public void delete(String index, String type, String id) {
         DeleteResponse response = client.prepareDelete(index, type, id).get();
-        return response.getResult();
-        //return client.prepareDelete("test", "tweet", id).get();
+        Serenity.setSessionVariable("response").to(response.getResult().toString());
     }
 
 
+
+    //TODO
     /**
      * @param name
      * @param text
      * @return
      */
     public long deleteByQuery(String name, String text) {
-        return new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE).setQuery(QueryBuilders.matchQuery(name, text))
+//        return new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE).setQuery(QueryBuilders.matchQuery(name, text))
+//                .execute().actionGet().getTotalDeleted();
+
+        long totalDeleted = new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE)
+                .setIndices("twitter")
+                .setTypes("tweet")
+                .setQuery(QueryBuilders.matchQuery(name, text))
                 .execute().actionGet().getTotalDeleted();
+        return totalDeleted;
+
+
+
+//        BulkByScrollResponse response = DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
+//                .filter(QueryBuilders.matchQuery(name, text))
+//                .source("twitter")
+//                .get();
+//        long deleted = response.getDeleted();
+//        return deleted;
+
+
+
     }
 
 

@@ -1,6 +1,7 @@
 package com.adidas.elasticsearch.service;
 
 import com.adidas.elasticsearch.model.Tweet;
+import net.serenitybdd.core.Serenity;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -22,13 +23,24 @@ public class CreateService {
     //Index document
     //The following example indexes a JSON document into an index called twitter, under a type called tweet
 
-    public IndexResponse create(String index, String type) {
+//    public IndexResponse create(String index, String type) {
+//        Tweet tweet = new Tweet("diegmer", "Where is my master????");
+//        tweet.setTweetMapJson(tweet);
+//        IndexResponse response = client.prepareIndex(index, type)
+//                .setSource(tweet.getTweetMapJson(), XContentType.JSON)
+//                .get();
+//        Serenity.setSessionVariable("response").to(response);
+//        return response;
+//
+//    }
+
+    public void create(String index, String type) {
         Tweet tweet = new Tweet("diegmer", "Where is my master????");
         tweet.setTweetMapJson(tweet);
-        return client.prepareIndex(index, type)
+        IndexResponse response = client.prepareIndex(index, type, "1")
                 .setSource(tweet.getTweetMapJson(), XContentType.JSON)
                 .get();
-
+        Serenity.setSessionVariable("response").to(response.getResult().toString());
     }
 
     /**
@@ -62,7 +74,6 @@ public class CreateService {
     }
 
     /**
-     *
      * @param index
      * @param type
      * @param user
@@ -71,16 +82,15 @@ public class CreateService {
      * @throws IOException
      */
     public IndexResponse create(String index, String type, String user, String sms) throws IOException {
-        IndexResponse response = client.prepareIndex(index, type, "1")
+        IndexResponse response = client.prepareIndex(index, type)
                 .setSource(jsonBuilder()
                         .startObject()
                         .field("user", user)
-                        .field("postDate", new Date())
+                        .field("postDate", new Date().getTime())
                         .field("message", sms)
                         .endObject()
                 )
-                .execute()
-                .actionGet();
+                .get();
         return response;
     }
 
