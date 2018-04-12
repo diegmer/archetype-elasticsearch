@@ -7,8 +7,6 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import net.thucydides.core.annotations.Steps;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.List;
 
 public class ExampleDefinitions {
@@ -34,7 +32,7 @@ public class ExampleDefinitions {
     }
 
     @And("^I insert new tweet \"([^\"]*)\" for user \"([^\"]*)\" in index \"([^\"]*)\"$")
-    public void iInsertNewTweetForUserInIndex(String sms, String user, String index) throws IOException {
+    public void iInsertNewTweetForUserInIndex(String sms, String user, String index) throws Throwable {
         exampleSteps.createIndex(index, user, sms);
     }
 
@@ -60,10 +58,9 @@ public class ExampleDefinitions {
         exampleSteps.deleteIndex(index);
     }
 
-    @Then("^I should get \"([^\"]*)\" status code$")
-    public void iShouldGetStatusCode(String arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @Then("^I should get (.*) status code$")
+    public void iShouldGetStatusCode(int expectedStatusCode) throws Throwable {
+        exampleSteps.verifyStatusCode(expectedStatusCode);
     }
 
     @When("^I request to delete a \"([^\"]*)\" by value \"([^\"]*)\"$")
@@ -106,5 +103,10 @@ public class ExampleDefinitions {
     @When("^I request to search \"([^\"]*)\" in fields \"([^\"]*)\" in index \"([^\"]*)\"$")
     public void iRequestToSearchInFieldsInIndex(String query, List<String> fields, String index) throws Throwable {
         exampleSteps.searchMultiMatchQuery(query, fields, index);
+    }
+
+    @When("^I request to search bool query in index \"([^\"]*)\"$")
+    public void iRequestToSearchBoolQueryInIndex(String index) throws Throwable {
+        exampleSteps.searchBoolQueryInIndex(index);
     }
 }

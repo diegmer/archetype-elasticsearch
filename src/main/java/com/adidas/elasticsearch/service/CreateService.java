@@ -1,7 +1,6 @@
 package com.adidas.elasticsearch.service;
 
 import com.adidas.elasticsearch.model.Tweet;
-import net.serenitybdd.core.Serenity;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -20,57 +19,50 @@ public class CreateService {
         this.client = client;
     }
 
-    //Index document
-    //The following example indexes a JSON document into an index called twitter, under a type called tweet
-
-//    public IndexResponse create(String index, String type) {
-//        Tweet tweet = new Tweet("diegmer", "Where is my master????");
-//        tweet.setTweetMapJson(tweet);
-//        IndexResponse response = client.prepareIndex(index, type)
-//                .setSource(tweet.getTweetMapJson(), XContentType.JSON)
-//                .get();
-//        Serenity.setSessionVariable("response").to(response);
-//        return response;
-//
-//    }
-
-    public void create(String index, String type) {
+    /**
+     * The following example indexes a JSON document into an index under a type
+     *
+     * @param index -> Name of index
+     * @param type  -> Name od type
+     */
+    public IndexResponse create(String index, String type) {
         Tweet tweet = new Tweet("diegmer", "Where is my master????");
         tweet.setTweetMapJson(tweet);
         IndexResponse response = client.prepareIndex(index, type, "1")
                 .setSource(tweet.getTweetMapJson(), XContentType.JSON)
                 .get();
-        Serenity.setSessionVariable("response").to(response.getResult().toString());
+        return response;
+        //Serenity.setSessionVariable("response").to(response.getResult().toString());
     }
 
     /**
      * Indexes a JSON document into an index
      *
-     * @param index
-     * @param type
-     * @param mapJson
+     * @param index   -> name of index
+     * @param type    -> name of type
+     * @param mapJson -> Json to add
      * @return
      */
     public IndexResponse create(String index, String type, Map<String, Object> mapJson) {
-        return client.prepareIndex(index, type)
+        IndexResponse response = client.prepareIndex(index, type)
                 .setSource(mapJson, XContentType.JSON)
                 .get();
-
+        return response;
     }
 
     /**
-     * Indexes a JSON document into an index
+     * Indexes a JSON document, in format String,  into an index
      *
-     * @param index
-     * @param type
-     * @param json
+     * @param index -> name of index
+     * @param type  -> name of type
+     * @param json  -> Json to add in String format
      * @return
      */
     public IndexResponse create(String index, String type, String json) {
-        return client.prepareIndex(index, type)
+        IndexResponse response = client.prepareIndex(index, type)
                 .setSource(json, XContentType.JSON)
                 .get();
-
+        return response;
     }
 
     /**

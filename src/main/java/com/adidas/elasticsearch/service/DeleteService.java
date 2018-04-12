@@ -28,6 +28,7 @@ public class DeleteService {
 
     //DONE
     /**
+     * Delete a index
      * @param index index to delete
      */
     public void deleteIndex(String index) {
@@ -36,9 +37,6 @@ public class DeleteService {
             DeleteIndexResponse deleteIndexResponse = client.admin().indices().delete(indexRequest).actionGet();
             boolean acknowledged = deleteIndexResponse.isAcknowledged();
             Serenity.setSessionVariable("acknowledged").to(acknowledged);
-//            if (acknowledged) {
-//                Logger.getLogger(getClass().getName()).log(Level.INFO, "Index has been deleted...");
-//            }
         } catch (Exception ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Exception occurred while delete Document :", ex);
             Assert.fail("Exception occurred while delete Document :" + ex);
@@ -48,7 +46,7 @@ public class DeleteService {
 
     //DONE
     /**
-     *
+     * Delete all index from elasticsearch server
      */
     public void deleteAllIndices() {
         ActionFuture<DeleteIndexResponse> deleteIndexResponses = client.admin().indices().delete(new DeleteIndexRequest(ALL_INDICES));
@@ -88,15 +86,6 @@ public class DeleteService {
                 .setQuery(QueryBuilders.matchQuery(name, text))
                 .execute().actionGet().getTotalDeleted();
         return totalDeleted;
-
-
-
-//        BulkByScrollResponse response = DeleteByQueryAction.INSTANCE.newRequestBuilder(client)
-//                .filter(QueryBuilders.matchQuery(name, text))
-//                .source("twitter")
-//                .get();
-//        long deleted = response.getDeleted();
-//        return deleted;
 
 
 
