@@ -25,14 +25,17 @@ public class SearchService {
     }
 
 
+    //DONE
     /**
      * The standard query for performing full text queries, including fuzzy matching and phrase or proximity queries.
-     * @param name
-     * @param text
+     *
+     * @param index where search
+     * @param name -> Field yoy query on
+     * @param text -> Text you are looking for
      * @return
      */
-    public long searchMatchQuery(String name, String text) {
-        SearchResponse response = client.prepareSearch("twitter").setQuery(QueryBuilders.matchQuery(name, text)).execute().actionGet();
+    public long searchMatchQuery(String index, String name, String text) {
+        SearchResponse response = client.prepareSearch(index).setQuery(QueryBuilders.matchQuery(name, text)).execute().actionGet();
         SearchHits hits = response.getHits();
         return hits.getTotalHits();
     }
@@ -40,34 +43,47 @@ public class SearchService {
 
     /**
      * The multi-field version of the match query.
-     * @param name
-     * @param fieldNames
+     *
+     * @param query -> Text you are looking for
+     * @param fieldNames -> Fields you query on
      * @return
      */
-    public long searchMultiMatchQuery(String name, String... fieldNames) {
-        SearchResponse response = client.prepareSearch("twitter").setQuery(QueryBuilders.multiMatchQuery(name, fieldNames)).execute().actionGet();
+    public long searchMultiMatchQuery(String index, String query, String... fieldNames) {
+        SearchResponse response = client.prepareSearch(index).setQuery(QueryBuilders.multiMatchQuery(query, fieldNames)).execute().actionGet();
         SearchHits hits = response.getHits();
         return hits.getTotalHits();
     }
 
 
+    //DONE
     /**
      * Here’re some basic operators that can be used alongside the AND/OR/NOT operators to build search queries:
-     *
+     * <p>
      * The required operator (+): requires that a specific piece of text exists somewhere in fields of a document.
      * The prohibit operator (–): excludes all documents that contain a keyword declared after the (–) symbol.
+     * The simple_query_string supports the following special characters:
+     *
+     * + signifies AND operation
+     * | signifies OR operation
+     * - negates a single token
+     * " wraps a number of tokens to signify a phrase for searching
+     * * at the end of a term signifies a prefix query
+     * ( and ) signify precedence
+     * ~N after a word signifies edit distance (fuzziness)
+     * ~N after a phrase signifies slop amount
+     *
+     * @param index where search
      * @param filter
      * @return
      */
-    public long searchSimpleQueryStringQuery(String filter) {
-        SearchResponse response = client.prepareSearch("twitter").setQuery(QueryBuilders.simpleQueryStringQuery(filter)).execute().actionGet();
+    public long searchSimpleQueryStringQuery(String index, String filter) {
+        SearchResponse response = client.prepareSearch(index).setQuery(QueryBuilders.simpleQueryStringQuery(filter)).execute().actionGet();
         SearchHits hits = response.getHits();
         return hits.getTotalHits();
     }
 
 
     /**
-     *
      * @return
      */
     public List<String> getMatchAllQueryData(String index) {

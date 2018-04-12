@@ -14,6 +14,7 @@ import org.junit.Assert;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ExampleSteps {
@@ -76,32 +77,47 @@ public class ExampleSteps {
     }
 
     @Step
-    public void search(String field, String value) throws UnknownHostException {
+    public void searchMatchQuery(String index, String field, String value) throws UnknownHostException {
         SearchService search = new SearchService(elastic.getTransportClient());
-        long hitsCount = search.searchMatchQuery(field, value);
+        long hitsCount = search.searchMatchQuery(index, field, value);
         Serenity.setSessionVariable("hitsCount").to(hitsCount);
 //        if (!search.searchMatchQuery(field, value).status().toString().equalsIgnoreCase("OK")) {
 //            Assert.fail("Error");
 //        }
     }
 
+    @Step
+    public void searchMultiMatchQuery(String query, List<String> fields, String index) throws UnknownHostException {
+        SearchService search = new SearchService(elastic.getTransportClient());
+        String fieldsSeparated = String.join(",", fields);
+        long hitsCount = search.searchMultiMatchQuery(index, query, fieldsSeparated);
+        Serenity.setSessionVariable("hitsCount").to(hitsCount);
+    }
+
+    @Step
+    public void searchSimpleQueryStringQuery(String index, String filter) throws UnknownHostException {
+        SearchService search = new SearchService(elastic.getTransportClient());
+        long hitsCount = search.searchSimpleQueryStringQuery(index, filter);
+        Serenity.setSessionVariable("hitsCount").to(hitsCount);
+    }
+
 
     /**
      * Method to verify an status code received from the scenario
+     *
      * @param expectedResult Expected status code in the response
-     * */
+     */
     @Step
-    public void verifyResult(String expectedResult){
+    public void verifyResult(String expectedResult) {
         String result = Serenity.sessionVariableCalled("response");
         Assert.assertEquals("Result doesn't match", expectedResult, result);
     }
 
     /**
-     *
      * @param expectedHitsCounts
      */
     @Step
-    public void verifyHit(String expectedHitsCounts){
+    public void verifyHit(String expectedHitsCounts) {
         String hitsCount = Serenity.sessionVariableCalled("hitsCount").toString();
         Assert.assertEquals("Result doesn't match", expectedHitsCounts, hitsCount);
     }

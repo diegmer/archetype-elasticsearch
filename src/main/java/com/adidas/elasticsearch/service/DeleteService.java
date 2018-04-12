@@ -54,7 +54,7 @@ public class DeleteService {
         ActionFuture<DeleteIndexResponse> deleteIndexResponses = client.admin().indices().delete(new DeleteIndexRequest(ALL_INDICES));
         client.admin().indices().flush(new FlushRequest(ALL_INDICES));
         boolean acknowledged = deleteIndexResponses.actionGet().isAcknowledged();
-        Serenity.setSessionVariable("response").to(acknowledged);
+        Serenity.setSessionVariable("acknowledged").to(acknowledged);
     }
 
 

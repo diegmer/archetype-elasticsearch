@@ -9,36 +9,24 @@ import net.thucydides.core.annotations.Steps;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.List;
 
 public class ExampleDefinitions {
 
     @Steps
     private ExampleSteps exampleSteps;
 
-    @When("I delete all index$")
-    public void iDelleteAllIndex() throws UnknownHostException {
-        exampleSteps.deleteAllIndices();
-    }
-
     @When("^I request to create a new index \"([^\"]*)\" with default values$")
     public void iCreateANewIndexWithDefaultValues(String index) throws Throwable {
         exampleSteps.createIndex(index);
     }
 
-//    @When("^I delete index \"([^\"]*)\"$")
-//    public void iDeleteIndex(String index) throws Throwable {
-//        exampleSteps.deleteIndex(index);
-//    }
 
     @And("^I update the index \"([^\"]*)\" and type \"([^\"]*)\"$")
     public void iUpdateTheIndexAndType(String index, String type) throws Throwable {
         exampleSteps.updateIndex(index, type);
     }
 
-    @And("^I search \"([^\"]*)\" \"([^\"]*)\"$")
-    public void iSearch(String field, String value) throws Throwable {
-        exampleSteps.search(field, value);
-    }
 
     @And("^I delete \"([^\"]*)\" \"([^\"]*)\"$")
     public void iDelete(String field, String value) throws Throwable {
@@ -50,11 +38,6 @@ public class ExampleDefinitions {
         exampleSteps.createIndex(index, user, sms);
     }
 
-
-//    @Then("^I should get \"([^\"]*)\" status code$")
-//    public void iShouldGetStatusCode(int expectedStatusCode) throws Throwable {
-//        exampleSteps.verifyStatusCode(expectedStatusCode);
-//    }
 
     @And("^The value for the \"([^\"]*)\" after post operation should be \"([^\"]*)\"$")
     public void theValueForTheAfterPostOperationShouldBe(String arg0, String arg1) throws Throwable {
@@ -100,13 +83,28 @@ public class ExampleDefinitions {
         exampleSteps.deleteIndex(index, type, id);
     }
 
-    @When("^I request to search field \"([^\"]*)\" with value \"([^\"]*)\"$")
-    public void iRequestToSearchFieldWithValue(String field, String value) throws Throwable {
-        exampleSteps.search(field, value);
+    @When("^I request to search field \"([^\"]*)\" with value \"([^\"]*)\" in index \"([^\"]*)\"$")
+    public void iRequestToSearchFieldWithValue(String index, String field, String value) throws Throwable {
+        exampleSteps.searchMatchQuery(index, field, value);
     }
 
     @Then("^I should is acknowledged$")
     public void iShouldIsAcknowledged() throws Throwable {
         exampleSteps.isAcknowledged();
+    }
+
+    @When("^I request to delete a \"([^\"]*)\" with nick \"([^\"]*)\"$")
+    public void iRequestToDeleteAWithNick(String field, String value) throws Throwable {
+        exampleSteps.deleteByQuery(field, value);
+    }
+
+    @When("^I request to search with filter \"([^\"]*)\" in index \"([^\"]*)\"$")
+    public void iRequestToSearchWithFilterInIndex(String filter, String index) throws Throwable {
+        exampleSteps.searchSimpleQueryStringQuery(index, filter);
+    }
+
+    @When("^I request to search \"([^\"]*)\" in fields \"([^\"]*)\" in index \"([^\"]*)\"$")
+    public void iRequestToSearchInFieldsInIndex(String query, List<String> fields, String index) throws Throwable {
+        exampleSteps.searchMultiMatchQuery(query, fields, index);
     }
 }
