@@ -17,12 +17,6 @@ public class SearchService {
         this.client = client;
     }
 
-//    public SearchResponse search() {
-//        return client.prepareSearch().get();
-//    }
-
-
-    //DONE
 
     /**
      * The standard query for performing full text queries, including fuzzy matching and phrase or proximity queries.
@@ -37,8 +31,6 @@ public class SearchService {
         return response;
     }
 
-
-    //DONE
 
     /**
      * The multi-field version of the match query.
@@ -55,8 +47,6 @@ public class SearchService {
         return response;
     }
 
-
-    //DONE
 
     /**
      * Here’re some basic operators that can be used alongside the AND/OR/NOT operators to build search queries:
@@ -84,7 +74,6 @@ public class SearchService {
     }
 
 
-    //DONE
     //ToRefactor
     /**
      * @param index The index where search
@@ -106,6 +95,5 @@ public class SearchService {
 
         return response;
     }
-
 
 }

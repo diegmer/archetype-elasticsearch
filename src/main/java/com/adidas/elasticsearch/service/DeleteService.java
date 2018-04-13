@@ -8,6 +8,7 @@ import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryAction;
 import org.elasticsearch.action.deletebyquery.DeleteByQueryRequestBuilder;
+import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.Assert;
@@ -26,9 +27,9 @@ public class DeleteService {
         this.client = client;
     }
 
-    //DONE
     /**
-     * Delete a index
+     * Delete a index from elasticsearch server
+     *
      * @param index index to delete
      */
     public void deleteIndex(String index) {
@@ -44,7 +45,6 @@ public class DeleteService {
     }
 
 
-    //DONE
     /**
      * Delete all index from elasticsearch server
      */
@@ -56,40 +56,34 @@ public class DeleteService {
     }
 
 
-    //DONE
     /**
-     * @param index
-     * @param type
-     * @param id
-     * @return
+     * Delete one index by name index, type and id
+     *
+     * @param index -> Index to delete
+     * @param type  -> Type index to delete
+     * @param id    -> Id to delete
+     * @return DeleteResponse
      */
-    public void delete(String index, String type, String id) {
+    public DeleteResponse delete(String index, String type, String id) {
         DeleteResponse response = client.prepareDelete(index, type, id).get();
-        Serenity.setSessionVariable("response").to(response.getResult().toString());
+        return response;
     }
-
 
 
     //TODO
+
     /**
-     * @param name
-     * @param text
+     * @param field
+     * @param value
      * @return
      */
-    public long deleteByQuery(String name, String text) {
-//        return new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE).setQuery(QueryBuilders.matchQuery(name, text))
-//                .execute().actionGet().getTotalDeleted();
-
-        long totalDeleted = new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE)
-                .setIndices("twitter")
-                .setTypes("tweet")
-                .setQuery(QueryBuilders.matchQuery(name, text))
-                .execute().actionGet().getTotalDeleted();
-        return totalDeleted;
-
-
-
+    public long deleteByQuery(String index, String type, String field, String value) {
+        DeleteByQueryResponse response = new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE)
+                .setIndices(index)
+                .setTypes(type)
+                .setQuery(QueryBuilders.matchQuery(field, value))
+                .execute().actionGet();
+        return response.getTotalDeleted();
     }
-
 
 }

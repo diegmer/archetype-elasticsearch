@@ -21,8 +21,40 @@ public class ExampleSteps {
 
     private ClientElastic elastic = new ClientElastic();
 
+
     /**
-     * DELETE
+     * Performs a CREATE operation that will create one concrete index
+     *
+     * @param index -> Name of index
+     * @throws Throwable
+     */
+    @Step
+    public void createIndex(String index, String type, List<String> data) throws Throwable {
+        //Two options to create index with specific settings and with defects settings
+        //CreateService create = new CreateService(elastic.getTransportClient(elastic.getSettings()));
+        CreateService create = new CreateService(elastic.getTransportClient());
+        IndexResponse response = create.create(index, type, data);
+        Serenity.setSessionVariable("response").to(response);
+        Serenity.setSessionVariable("result").to(response.getResult().toString());
+    }
+
+
+    /**
+     * @param index
+     * @param user
+     * @param sms
+     * @throws Throwable
+     */
+    @Step
+    public void createIndex(String index, String user, String sms) throws Throwable {
+        //Two options to create index with specific settings and with defects settings
+        //CreateService create = new CreateService(elastic.getTransportClient(elastic.getSettings()));
+        CreateService create = new CreateService(elastic.getTransportClient());
+        create.create(index, "tweet", user, sms);
+    }
+
+    /**
+     * DELETE ELASTICSEARCH
      */
 
     /**
@@ -59,71 +91,31 @@ public class ExampleSteps {
     @Step
     public void deleteIndex(String index, String type, String id) throws Throwable {
         DeleteService delete = new DeleteService(elastic.getTransportClient());
-        delete.delete(index, type, id);
+        DeleteResponse response = delete.delete(index, type, id);
+        Serenity.setSessionVariable("response").to(response);
+        Serenity.setSessionVariable("result").to(response.getResult().toString());
     }
 
     //TODO
 
     /**
+     * @param index
+     * @param type
      * @param field
      * @param value
      * @throws Throwable
      */
     @Step
-    public void deleteByQuery(String field, String value) throws Throwable {
+    public void deleteByQuery(String index, String type, String field, String value) throws Throwable {
         DeleteService delete = new DeleteService(elastic.getTransportClient());
-        delete.deleteByQuery(field, value);
-        Assert.assertTrue("Fail to delete", "1".equalsIgnoreCase(String.valueOf(delete.deleteByQuery(field, value))));
+        delete.deleteByQuery(index, type, field, value);
+        Assert.assertTrue("Fail to delete", "1".equalsIgnoreCase(String.valueOf(delete.deleteByQuery(index, type, field, value))));
     }
 
 
     /**
-     * Check if operation is acknowledged
+     * SEARCH ELASTICSEARCH
      */
-    @Step
-    public void isAcknowledged() {
-        if (Serenity.sessionVariableCalled("acknowledged") != null) {
-            Assert.assertTrue("acknowledged is false", Serenity.sessionVariableCalled("acknowledged"));
-        }
-    }
-
-
-    /**
-     * Performs a CREATE operation that will create one concrete index
-     *
-     * @param index -> Name of index
-     * @throws Throwable
-     */
-    @Step
-    public void createIndex(String index, String type, List<String> data) throws Throwable {
-        //Two options to create index with specific settings and with defects settings
-        //CreateService create = new CreateService(elastic.getTransportClient(elastic.getSettings()));
-        CreateService create = new CreateService(elastic.getTransportClient());
-        IndexResponse response = create.create(index, type, data);
-        Serenity.setSessionVariable("response").to(response.status().getStatus());
-        Serenity.setSessionVariable("result").to(response.getResult().toString());
-    }
-
-
-    /**
-     * @param index
-     * @param user
-     * @param sms
-     * @throws Throwable
-     */
-    @Step
-    public void createIndex(String index, String user, String sms) throws Throwable {
-        //Two options to create index with specific settings and with defects settings
-        //CreateService create = new CreateService(elastic.getTransportClient(elastic.getSettings()));
-        CreateService create = new CreateService(elastic.getTransportClient());
-        create.create(index, "tweet", user, sms);
-    }
-
-
-    /**
-     * SEARCH
-     */
-
 
     /**
      * @param index
@@ -141,6 +133,8 @@ public class ExampleSteps {
 
 
     /**
+     * Performs a SEARCH operation that will search in elasticsearch by query and filters
+     *
      * @param query
      * @param fields
      * @param index
@@ -156,6 +150,8 @@ public class ExampleSteps {
     }
 
     /**
+     * Performs a SEARCH operation that will search in elasticsearch by filter
+     *
      * @param index
      * @param filter
      * @throws Throwable
@@ -183,50 +179,28 @@ public class ExampleSteps {
 
 
     /**
-     * Method to verify an status code received from the scenario
-     *
-     * @param expectedResult Expected status code in the response
+     * UPDATE ELASTICSEARCH
      */
-    @Step
-    public void verifyResult(String expectedResult) {
-        String result = Serenity.sessionVariableCalled("result");
-        Assert.assertEquals("Result doesn't match", expectedResult, result);
-    }
 
     /**
-     * @param expectedHitsCounts
+     * @param index
+     * @param field
+     * @param value
+     * @throws Throwable
      */
     @Step
-    public void verifyHit(String expectedHitsCounts) {
-        String hitsCount = Serenity.sessionVariableCalled("hitsCount").toString();
-        Assert.assertEquals("Result doesn't match", expectedHitsCounts, hitsCount);
+    public void updateMatchQuery(String index, String field, String value) throws Throwable {
+        UpdateService update = new UpdateService(elastic.getTransportClient());
+        UpdateResponse response = update.updateDocument(index, field, value);
+        Serenity.setSessionVariable("response").to(response);
+        Serenity.setSessionVariable("result").to(response.getResult().name());
     }
-
-    /**
-     * Closes the client.
-     */
-    @After
-    public void closeClient() {
-        elastic.closeClient();
-    }
-
-
-//    /**
-//     * Method to verify an status code received from the scenario
-//     *
-//     * @param expectedStatusCode Expected status code in the response
-//     */
-//    @Step
-//    public void verifyStatusCode(int expectedStatusCode) {
-//
-//        SearchResponse res = Serenity.sessionVariableCalled("response");
-//        Assert.assertEquals("status code doesn't match", expectedStatusCode, res.status().getStatus());
-//    }
 
     /**
      * Method to verify an status code received from the scenario
      *
      * @param expectedStatusCode Expected status code in the response
+     * @param operation          response depends of type operation
      */
     @Step
     public void verifyStatusCode(int expectedStatusCode, String operation) {
@@ -254,22 +228,46 @@ public class ExampleSteps {
             }
             Assert.assertEquals("status code doesn't match", expectedStatusCode, response.status().getStatus());
         }
-
     }
 
-
     /**
-     * @param index
-     * @param field
-     * @param value
-     * @throws Throwable
+     * Method to verify an status code received from the scenario
+     *
+     * @param expectedResult Expected status code in the response
      */
     @Step
-    public void updateMatchQuery(String index, String field, String value) throws Throwable {
-        UpdateService update = new UpdateService(elastic.getTransportClient());
-        UpdateResponse response = update.updateDocument(index, field, value);
-        Serenity.setSessionVariable("response").to(response);
-        Serenity.setSessionVariable("result").to(response.getResult().name());
+    public void verifyResult(String expectedResult) {
+        String result = Serenity.sessionVariableCalled("result");
+        Assert.assertEquals("Result doesn't match", expectedResult, result);
+    }
+
+    /**
+     * Method to verify number expect hits
+     *
+     * @param expectedHitsCounts -> Number expect hits
+     */
+    @Step
+    public void verifyHit(String expectedHitsCounts) {
+        String hitsCount = Serenity.sessionVariableCalled("hitsCount").toString();
+        Assert.assertEquals("Result doesn't match", expectedHitsCounts, hitsCount);
+    }
+
+    /**
+     * Check if operation is acknowledged
+     */
+    @Step
+    public void isAcknowledged() {
+        if (Serenity.sessionVariableCalled("acknowledged") != null) {
+            Assert.assertTrue("acknowledged is false", Serenity.sessionVariableCalled("acknowledged"));
+        }
+    }
+
+    /**
+     * Closes the client.
+     */
+    @After
+    public void closeClient() {
+        elastic.closeClient();
     }
 
 }

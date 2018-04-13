@@ -40,6 +40,7 @@ public class CreateService {
         return response;
     }
 
+
     /**
      * Indexes a JSON document into an index
      *
@@ -55,6 +56,7 @@ public class CreateService {
         return response;
     }
 
+
     /**
      * Indexes a JSON document, in format String,  into an index
      *
@@ -69,6 +71,7 @@ public class CreateService {
                 .get();
         return response;
     }
+
 
     /**
      * @param index
@@ -90,6 +93,5 @@ public class CreateService {
                 .get();
         return response;
     }
-
 
 }
