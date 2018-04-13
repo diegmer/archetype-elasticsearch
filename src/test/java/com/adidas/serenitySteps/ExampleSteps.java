@@ -7,8 +7,11 @@ import com.adidas.elasticsearch.service.SearchService;
 import com.adidas.elasticsearch.service.UpdateService;
 import net.serenitybdd.core.Serenity;
 import net.thucydides.core.annotations.Step;
+import org.elasticsearch.action.DocWriteResponse;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.junit.After;
 import org.junit.Assert;
 
@@ -24,6 +27,7 @@ public class ExampleSteps {
 
     /**
      * Performs a DELETE operation that will delete all indices from elasticsearch server
+     *
      * @throws Throwable
      */
     @Step
@@ -34,6 +38,7 @@ public class ExampleSteps {
 
     /**
      * Performs a DELETE operation that will delete one concrete index
+     *
      * @param index -> Name index to delete
      * @throws Throwable
      */
@@ -45,9 +50,10 @@ public class ExampleSteps {
 
     /**
      * Performs a DELETE operation that will delete one concrete index, type and id
+     *
      * @param index -> Name index
-     * @param type -> Name type
-     * @param id -> Number ID
+     * @param type  -> Name type
+     * @param id    -> Number ID
      * @throws Throwable
      */
     @Step
@@ -57,8 +63,8 @@ public class ExampleSteps {
     }
 
     //TODO
+
     /**
-     *
      * @param field
      * @param value
      * @throws Throwable
@@ -84,22 +90,22 @@ public class ExampleSteps {
 
     /**
      * Performs a CREATE operation that will create one concrete index
+     *
      * @param index -> Name of index
      * @throws Throwable
      */
     @Step
-    public void createIndex(String index) throws Throwable {
+    public void createIndex(String index, String type, List<String> data) throws Throwable {
         //Two options to create index with specific settings and with defects settings
         //CreateService create = new CreateService(elastic.getTransportClient(elastic.getSettings()));
         CreateService create = new CreateService(elastic.getTransportClient());
-        IndexResponse response = create.create(index, "tweet");
+        IndexResponse response = create.create(index, type, data);
         Serenity.setSessionVariable("response").to(response.status().getStatus());
         Serenity.setSessionVariable("result").to(response.getResult().toString());
     }
 
 
     /**
-     *
      * @param index
      * @param user
      * @param sms
@@ -113,12 +119,6 @@ public class ExampleSteps {
         create.create(index, "tweet", user, sms);
     }
 
-    @Step
-    public void updateIndex(String index, String type) throws Throwable {
-        UpdateService update = new UpdateService(elastic.getTransportClient());
-        update.updateDocument(index, type);
-    }
-
 
     /**
      * SEARCH
@@ -126,7 +126,6 @@ public class ExampleSteps {
 
 
     /**
-     *
      * @param index
      * @param field
      * @param value
@@ -142,7 +141,6 @@ public class ExampleSteps {
 
 
     /**
-     *
      * @param query
      * @param fields
      * @param index
@@ -158,7 +156,6 @@ public class ExampleSteps {
     }
 
     /**
-     *
      * @param index
      * @param filter
      * @throws Throwable
@@ -173,7 +170,6 @@ public class ExampleSteps {
 
 
     /**
-     *
      * @param index
      * @throws Throwable
      */
@@ -215,16 +211,65 @@ public class ExampleSteps {
     }
 
 
+//    /**
+//     * Method to verify an status code received from the scenario
+//     *
+//     * @param expectedStatusCode Expected status code in the response
+//     */
+//    @Step
+//    public void verifyStatusCode(int expectedStatusCode) {
+//
+//        SearchResponse res = Serenity.sessionVariableCalled("response");
+//        Assert.assertEquals("status code doesn't match", expectedStatusCode, res.status().getStatus());
+//    }
+
     /**
      * Method to verify an status code received from the scenario
      *
      * @param expectedStatusCode Expected status code in the response
      */
     @Step
-    public void verifyStatusCode(int expectedStatusCode) {
+    public void verifyStatusCode(int expectedStatusCode, String operation) {
+        if (operation.equalsIgnoreCase("search")) {
+            SearchResponse searchResponse = Serenity.sessionVariableCalled("response");
+            Assert.assertEquals("status code doesn't match", expectedStatusCode, searchResponse.status().getStatus());
+        } else {
+            DocWriteResponse response = new DocWriteResponse() {
+            };
+            switch (operation) {
+                case "create":
+                    IndexResponse indexResponse = Serenity.sessionVariableCalled("response");
+                    response = indexResponse;
+                    break;
+                case "update":
+                    UpdateResponse updateResponse = Serenity.sessionVariableCalled("response");
+                    response = updateResponse;
+                    break;
+                case "delete":
+                    DeleteResponse deleteResponse = Serenity.sessionVariableCalled("response");
+                    response = deleteResponse;
+                    break;
+                default:
+                    break;
+            }
+            Assert.assertEquals("status code doesn't match", expectedStatusCode, response.status().getStatus());
+        }
 
-        SearchResponse res = Serenity.sessionVariableCalled("response");
-        Assert.assertEquals("status code doesn't match", expectedStatusCode, res.status().getStatus());
+    }
+
+
+    /**
+     * @param index
+     * @param field
+     * @param value
+     * @throws Throwable
+     */
+    @Step
+    public void updateMatchQuery(String index, String field, String value) throws Throwable {
+        UpdateService update = new UpdateService(elastic.getTransportClient());
+        UpdateResponse response = update.updateDocument(index, field, value);
+        Serenity.setSessionVariable("response").to(response);
+        Serenity.setSessionVariable("result").to(response.getResult().name());
     }
 
 }

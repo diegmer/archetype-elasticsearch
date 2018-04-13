@@ -2,11 +2,13 @@ package com.adidas.elasticsearch.model;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/***
+ *  Class Tweet for usage examples of Elasticsearch
+ */
 public class Tweet {
 
     private String user;
@@ -14,13 +16,16 @@ public class Tweet {
     private String message;
     private Map<String, Object> tweetMapJson = new HashMap<String, Object>();
 
+    public Tweet() {
+        Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        this.postDate = formatter.format(new Date());
+    }
+
     public Tweet(String user, String message) {
         //Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Format formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-        //LocalDateTime currentDateTime = LocalDateTime.now();
         this.user = user;
         this.postDate = formatter.format(new Date());
-        //this.postDate = currentDateTime.toString();
         this.message = message;
     }
 
@@ -36,17 +41,9 @@ public class Tweet {
         return postDate;
     }
 
-//    public long getPostDate() {
-//        return postDate;
-//    }
-
     public void setPostDate(String postDate) {
         this.postDate = postDate;
     }
-
-//    public void setPostDate(long postDate) {
-//        this.postDate = postDate;
-//    }
 
     public String getMessage() {
         return message;

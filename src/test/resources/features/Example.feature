@@ -1,29 +1,117 @@
 Feature: Basic Elasticsearch feature
 
-#  Scenario: Delete an existing index
-#    When I request to delete a index by name "twitter"
-##    Then I should get "204" status code
+#  @elastic @create
+#  Scenario Outline: API Create a new Tweet
+#    When I request to create a new index "<indexName>" with values for "<typeName>"
+#      | diegmer          |
+#      | Hi elasticsearch |
+#    Then I should get <expectedStatusCode> status code in "create"
+#    And I should get "<expectedResult>" result
+#
+#    Examples:
+#      | indexName | typeName | expectedStatusCode | expectedResult |
+#      | twitter   | tweet    | 200                | CREATED        |
+##      | blog      | post     | 200                | CREATED        |
 
 
-  Scenario Outline: Create a new Tweet
-    When I request to create a new index "twitter" with default values
-    Then I should get "<expectedResult>" result
-#    And The value for the "<key>" after post operation should be "<value>"
-#    When I request to delete a "user" by value "diegmer"
+
+  @elastic @update
+  Scenario Outline: Update a document
+    When I request to update field "<field>" with value "<value>" in index "<indexName>"
+    Then I should get <expectedStatusCode> status code in "update"
+    And I should get "<expectedResult>" result
 
     Examples:
-      | key  | value   | expectedResult |
-      | user | diegmer | CREATED        |
+      | field   | value               | indexName | expectedStatusCode | expectedResult |
+      | message | I like mario bros 7 | twitter   | 200                | UPDATED        |
+      | message | I like mario bros 4 | twitter   | 200                | UPDATED        |
 
 
-  Scenario: Delete an existing user
-    #Dado que estoy en el index Twitter y type tweet
-    When I request to delete a "user" by value "diegmer"
-#    Then I should get 204 status code
+  @elastic @search
+  Scenario Outline: Search an existing user by field, value and index
+    When I request to search field "<field>" with value "<value>" in index "<indexName>"
+    Then I should get <expectedStatusCode> status code in "search"
+    And I should get "<expectedResult>" hits
+
+    Examples:
+      | field | value    | expectedResult | indexName | expectedStatusCode |
+      | user  | diegmer  | 1              | twitter   | 200                |
+      | user  | diegmer2 | 0              | twitter   | 200                |
+      | user  | luigi    | 5              | twitter   | 200                |
 
 
-  Scenario: Test1
+  @elastic @search
+  Scenario Outline: Search by filter
+    When I request to search with filter "<filter>" in index "<indexName>"
+    Then I should get <expectedStatusCode> status code in "search"
+    And I should get "<expectedResult>" hits
 
-    And I insert new tweet "Hello" for user "mario" in index "index"
-    And I delete "user" "diegmer"
-    #And I update the index "twitter" and type "tweet"
+    Examples:
+      | filter        | expectedResult | indexName | expectedStatusCode |
+      | +luigi -party | 3              | twitter   | 200                |
+      | +diegmer      | 1              | twitter   | 200                |
+
+
+  @elastic @search
+  Scenario Outline: Search by fields
+    When I request to search "<query>" in fields "<fields>" in index "<indexName>"
+    Then I should get <expectedStatusCode> status code in "search"
+    And I should get "<expectedResult>" hits
+
+    Examples:
+      | query  | fields        | expectedResult | indexName | expectedStatusCode |
+      | mario  | user, message | 2              | twitter   | 200                |
+      | master | user, message | 1              | twitter   | 200                |
+      | party  | user, message | 1              | twitter   | 200                |
+
+
+  @elastic @search
+  Scenario Outline: Search by bool query
+    When I request to search bool query in index "<indexName>"
+    Then I should get <expectedStatusCode> status code in "search"
+    And I should get "<expectedResult>" hits
+
+    Examples:
+      | query | fields        | expectedResult | indexName | expectedStatusCode |
+      | mario | user, message | 2              | twitter   | 200                |
+
+
+
+
+    #TODO
+#  @elastic @delete
+#  Scenario Outline: Delete a user
+#    When I request to delete a "user" with nick "diegmer"
+#    Then I should get "<expectedResult>" result
+#
+#    Examples:
+#      | key  | value   | expectedResult |
+#      | user | diegmer | DELETED        |
+
+
+#  @elastic @delete
+#  Scenario Outline: Delete a index by index, type and id
+#    When I request to delete a index "twitter" type "tweet" by ID "1"
+#    Then I should get "<expectedResult>" result
+#
+#    Examples:
+#      | key  | value   | expectedResult |
+#      | user | diegmer | DELETED        |
+
+
+#  @elastic @delete
+#  Scenario Outline: Delete a index by name
+#    When I request to delete a index by name "<index>"
+#    Then I should is acknowledged
+#
+#    Examples:
+#      | index   |
+#      | twitter |
+#      | blog    |
+#
+#
+#  @elastic @delete
+#  Scenario: Delete all index
+#    When I request to delete all index
+#    Then I should is acknowledged
+

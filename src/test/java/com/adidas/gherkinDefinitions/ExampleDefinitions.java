@@ -14,15 +14,9 @@ public class ExampleDefinitions {
     @Steps
     private ExampleSteps exampleSteps;
 
-    @When("^I request to create a new index \"([^\"]*)\" with default values$")
-    public void iCreateANewIndexWithDefaultValues(String index) throws Throwable {
-        exampleSteps.createIndex(index);
-    }
-
-
-    @And("^I update the index \"([^\"]*)\" and type \"([^\"]*)\"$")
-    public void iUpdateTheIndexAndType(String index, String type) throws Throwable {
-        exampleSteps.updateIndex(index, type);
+    @When("^I request to create a new index \"([^\"]*)\" with values for \"([^\"]*)\"")
+    public void iCreateANewIndexWithDefaultValues(String index, String type, List<String> data) throws Throwable {
+        exampleSteps.createIndex(index, type, data);
     }
 
 
@@ -58,10 +52,10 @@ public class ExampleDefinitions {
         exampleSteps.deleteIndex(index);
     }
 
-    @Then("^I should get (.*) status code$")
-    public void iShouldGetStatusCode(int expectedStatusCode) throws Throwable {
-        exampleSteps.verifyStatusCode(expectedStatusCode);
-    }
+//    @Then("^I should get (.*) status code$")
+//    public void iShouldGetStatusCode(int expectedStatusCode) throws Throwable {
+//        exampleSteps.verifyStatusCode(expectedStatusCode);
+//    }
 
     @When("^I request to delete a \"([^\"]*)\" by value \"([^\"]*)\"$")
     public void iRequestToDeleteAByValue(String field, String value) throws Throwable {
@@ -81,7 +75,7 @@ public class ExampleDefinitions {
     }
 
     @When("^I request to search field \"([^\"]*)\" with value \"([^\"]*)\" in index \"([^\"]*)\"$")
-    public void iRequestToSearchFieldWithValue(String index, String field, String value) throws Throwable {
+    public void iRequestToSearchFieldWithValue(String field, String value, String index) throws Throwable {
         exampleSteps.searchMatchQuery(index, field, value);
     }
 
@@ -108,5 +102,15 @@ public class ExampleDefinitions {
     @When("^I request to search bool query in index \"([^\"]*)\"$")
     public void iRequestToSearchBoolQueryInIndex(String index) throws Throwable {
         exampleSteps.searchBoolQueryInIndex(index);
+    }
+
+    @When("^I request to update field \"([^\"]*)\" with value \"([^\"]*)\" in index \"([^\"]*)\"$")
+    public void iRequestToUpdateFieldWithValueInIndex(String field, String value, String index) throws Throwable {
+        exampleSteps.updateMatchQuery(index, field, value);
+    }
+
+    @Then("^I should get (.*) status code in \"([^\"]*)\"$")
+    public void iShouldGetExpectedStatusCodeStatusCodeIn(int expectedStatusCode, String operation) {
+        exampleSteps.verifyStatusCode(expectedStatusCode, operation);
     }
 }

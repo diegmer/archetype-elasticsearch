@@ -7,6 +7,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
@@ -25,14 +26,18 @@ public class CreateService {
      * @param index -> Name of index
      * @param type  -> Name od type
      */
-    public IndexResponse create(String index, String type) {
-        Tweet tweet = new Tweet("diegmer", "Where is my master????");
+    public IndexResponse create(String index, String type, List<String> data) {
+        //Tweet tweet = new Tweet("diegmer", "Where is my master????");
+        Tweet tweet = new Tweet();
+        for (int i = 0; i < data.size(); i++) {
+            tweet.setUser(data.get(i++));
+            tweet.setMessage(data.get(i++));
+        }
         tweet.setTweetMapJson(tweet);
         IndexResponse response = client.prepareIndex(index, type, "1")
                 .setSource(tweet.getTweetMapJson(), XContentType.JSON)
                 .get();
         return response;
-        //Serenity.setSessionVariable("response").to(response.getResult().toString());
     }
 
     /**
