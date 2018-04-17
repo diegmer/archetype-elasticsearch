@@ -77,13 +77,13 @@ public class DeleteService {
      * @param value
      * @return
      */
-    public long deleteByQuery(String index, String type, String field, String value) {
+    public DeleteByQueryResponse deleteByQuery(String index, String type, String field, String value) {
         DeleteByQueryResponse response = new DeleteByQueryRequestBuilder(client, DeleteByQueryAction.INSTANCE)
                 .setIndices(index)
                 .setTypes(type)
                 .setQuery(QueryBuilders.matchQuery(field, value))
                 .execute().actionGet();
-        return response.getTotalDeleted();
+        return response;
     }
 
 }

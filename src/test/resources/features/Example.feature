@@ -67,20 +67,20 @@ Feature: Basic Elasticsearch feature
 
   @elastic @search
   Scenario Outline: Search by bool query
-    When I request to search bool query in index "<indexName>"
+    When I request to search bool query in index "<indexName>" and type "<typeName>"
     Then I should get <expectedStatusCode> status code in search
     And I should get "<expectedResult>" hits
 
     Examples:
-      | query | fields        | expectedResult | indexName | expectedStatusCode |
-      | mario | user, message | 2              | twitter   | 200                |
+      | indexName | typeName | expectedStatusCode | expectedResult |
+      | twitter   | tweet    | 200                | 2              |
 
 
 
   #TODO
   @elastic @delete
   Scenario: Delete a user by value
-    When I request to delete a "user" by value "diegmer" a index "twitter" type "tweet"
+    When I request to delete a "user" by value "luigi" a index "twitter" type "tweet"
     Then I should get "DELETED" result
 
 

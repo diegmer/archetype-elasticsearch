@@ -75,11 +75,15 @@ public class SearchService {
 
 
     //ToRefactor
+
     /**
+     * must -> The clause (query) must appear in matching documents and will contribute to the score.
+     * mustNot -> The clause (query) must not appear in the matching documents.
+     *
      * @param index The index where search
      * @return
      */
-    public SearchResponse searchBoolQuery(String index) {
+    public SearchResponse searchBoolQuery(String index, String type) {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         QueryBuilder qb = boolQuery()
                 .must(termQuery("user", "mario"))
@@ -89,7 +93,7 @@ public class SearchService {
 
         SearchResponse response = client
                 .prepareSearch(index)
-                .setTypes("tweet")
+                .setTypes(type)
                 .setQuery(qb)
                 .execute().actionGet();
 

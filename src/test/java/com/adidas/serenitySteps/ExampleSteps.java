@@ -9,6 +9,7 @@ import net.serenitybdd.core.Serenity;
 import net.thucydides.core.annotations.Step;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.deletebyquery.DeleteByQueryResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateResponse;
@@ -108,7 +109,7 @@ public class ExampleSteps {
     @Step
     public void deleteByQuery(String index, String type, String field, String value) throws Throwable {
         DeleteService delete = new DeleteService(elastic.getTransportClient());
-        delete.deleteByQuery(index, type, field, value);
+        DeleteByQueryResponse response = delete.deleteByQuery(index, type, field, value);
         Assert.assertTrue("Fail to delete", "1".equalsIgnoreCase(String.valueOf(delete.deleteByQuery(index, type, field, value))));
     }
 
@@ -166,13 +167,16 @@ public class ExampleSteps {
 
 
     /**
-     * @param index
+     * ç
+     *
+     * @param index -> Index to search
+     * @param type -> Type to search
      * @throws Throwable
      */
     @Step
-    public void searchBoolQueryInIndex(String index) throws Throwable {
+    public void searchBoolQueryInIndex(String index, String type) throws Throwable {
         SearchService search = new SearchService(elastic.getTransportClient());
-        SearchResponse response = search.searchBoolQuery(index);
+        SearchResponse response = search.searchBoolQuery(index, type);
         Serenity.setSessionVariable("response").to(response);
         Serenity.setSessionVariable("hitsCount").to(response.getHits().getTotalHits());
     }

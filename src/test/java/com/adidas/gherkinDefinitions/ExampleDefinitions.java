@@ -54,9 +54,9 @@ public class ExampleDefinitions {
         exampleSteps.searchMultiMatchQuery(query, fields, index);
     }
 
-    @When("^I request to search bool query in index \"([^\"]*)\"$")
-    public void iRequestToSearchBoolQueryInIndex(String index) throws Throwable {
-        exampleSteps.searchBoolQueryInIndex(index);
+    @When("^I request to search bool query in index \"([^\"]*)\" and type \"([^\"]*)\"$")
+    public void iRequestToSearchBoolQueryInIndex(String index, String type) throws Throwable {
+        exampleSteps.searchBoolQueryInIndex(index,type);
     }
 
     @When("^I request to update field \"([^\"]*)\" with value \"([^\"]*)\" in index \"([^\"]*)\"$")
